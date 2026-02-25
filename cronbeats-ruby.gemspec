@@ -6,8 +6,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["CronBeats"]
   spec.email = ["support@cronbeats.com"]
 
-  spec.summary = "Official CronBeats Ping SDK for Ruby."
-  spec.description = "Ruby client for CronBeats ping, start/end, and progress telemetry APIs."
+  spec.summary = "Cron job monitoring and heartbeat monitoring SDK for Ruby."
+  spec.description = "Cron job monitoring and heartbeat monitoring SDK for Ruby. Monitor scheduled tasks, background jobs, and cron jobs with simple ping telemetry. Get alerts when cron jobs fail, miss their schedule, or run too long."
   spec.homepage = "https://github.com/cronbeats/cronbeats-ruby"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0"
