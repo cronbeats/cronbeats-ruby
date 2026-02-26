@@ -23,15 +23,74 @@ client.start
 client.success
 ```
 
-## Progress Updates
+## Progress Tracking
+
+Track your job's progress in real-time. CronBeats supports two distinct modes:
+
+### Mode 1: With Percentage (0-100)
+Shows a **progress bar** and your status message on the dashboard.
+
+✓ **Use when**: You can calculate meaningful progress (e.g., processed 750 of 1000 records)
 
 ```ruby
-client.progress(50, "Processing batch 50/100")
+# Percentage mode: 0-100 with message
+client.progress(50, "Processing batch 500/1000")
 
+# Or using hash
 client.progress({
   seq: 75,
-  message: "Almost done"
+  message: "Almost done - 750/1000"
 })
+```
+
+### Mode 2: Message Only
+Shows **only your status message** (no percentage bar) on the dashboard.
+
+✓ **Use when**: Progress isn't measurable or you only want to send status updates
+
+```ruby
+# Message-only mode: nil seq, just status updates
+client.progress(nil, "Connecting to database...")
+client.progress(nil, "Starting data sync...")
+```
+
+### What you see on the dashboard
+- **Mode 1**: Progress bar (0-100%) + your message → "75% - Processing batch 750/1000"
+- **Mode 2**: Only your status message → "Connecting to database..."
+
+### Complete Example
+
+```ruby
+require "cronbeats_ruby"
+
+client = CronBeatsRuby::PingClient.new("abc123de")
+client.start
+
+begin
+  # Message-only updates for non-measurable steps
+  client.progress(nil, "Connecting to database...")
+  db = connect_to_database
+  
+  client.progress(nil, "Fetching records...")
+  total = db.count
+  
+  # Percentage updates for measurable progress
+  (0...total).each do |i|
+    process_record(i)
+    
+    if (i % 100).zero?
+      percent = (i * 100 / total).to_i
+      client.progress(percent, "Processed #{i} / #{total} records")
+    end
+  end
+  
+  client.progress(100, "All records processed")
+  client.success
+  
+rescue => e
+  client.fail
+  raise
+end
 ```
 
 ## Notes
